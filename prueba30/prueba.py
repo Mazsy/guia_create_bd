@@ -1,32 +1,33 @@
-        import os
+import random 
+import os
 import sqlite3
 connection = sqlite3.connect("prueba.db")
 
 cursor = connection.cursor()
-
+array=[]
 archivo = open('nombres.txt', 'r')
-for linea in archivo:
-    l=linea.split(", ")
+nombres = archivo.readlines()
+
+nombre=[]
+for name in nombres:
+    nombre.append( "".join(name.split("\n")))
 
 archivo = open('apellidos.txt', 'r')
-for linea in archivo:
-    l2=linea.split(", ")
-
-nombres=[]
-for n in l: 
-    if n == "\n":
-        break
-    nombres.append(n)
-
-apellidos=[]
-for a in l2: 
-    if a == "\n":
-        break
-    apellidos.append(a)
-
-lista=[[l, n, a] for l, (n, a) in enumerate(zip(nombres, apellidos))]
+apellidos = archivo.readlines()
+#https://github.com/olea/lemarios/blob/master/apellidos-es.txt
+apellido=[]
+for lastname in apellidos:
+    apellido.append( "".join(lastname.split("\n")))
 
 
+dni = []
+for _ in range(30):
+    dni.append(random.randint(300000000, 400000000))
+
+
+lista=[[l, n, a, d] for l, (n, a, d) in enumerate(zip(nombre, apellido, dni))]
+
+#print (lista)
 
 #from pathlib import Path
 #def list_from_filename(filename):
@@ -40,7 +41,8 @@ sql_command = """
 CREATE TABLE employee ( 
 id INTEGER PRIMARY KEY,
 nombre VARCHAR(20),
-apellido VARCHAR(20)
+apellido VARCHAR(20),
+dni INTEGER 
 );"""
 
 cursor.execute(sql_command)
@@ -49,7 +51,7 @@ cursor.execute(sql_command)
 #    VALUES (0, "William", "Shekeaspere", 34907555, 4948432, Codoba);"""
 #cursor.executemany('INSERT INTO employee VALUES(?,?,?,?,?,?);', lista);
 
-cursor.executemany('INSERT INTO employee VALUES(?,?,?);', lista);
+cursor.executemany('INSERT INTO employee VALUES(?,?,?,?);', lista);
 
 connection.commit()
 
